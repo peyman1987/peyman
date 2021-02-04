@@ -1,0 +1,659 @@
+openapi: 3.0.0
+info:
+  title: Specifiche per l'applicazione Tributi provinciali
+  version: 1.0.0
+servers:
+  - url: 'http://localhost/api/'
+    description: Local Development server
+tags:
+  - name: avvisi
+    description: API per gestione avvisi
+  - name: utility
+    description: API generiche
+  - name: file
+    description: API per gestione file
+  - name: email
+    description: API per gestione email
+  - name: regolamento
+    description: API per gestione regolamenti
+paths:
+  /avvisi:
+    get:
+      summary: Restituisce l'elenco degli avvisi da mostrare in homepage
+      tags:
+        - avvisi
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/avviso'
+        '201':
+          description: Created
+        '404':
+          description: tributi non trovato
+        '500':
+          description: errore nel caricamento dei dati
+      operationId: ''
+      parameters:
+        - schema:
+            type: string
+          in: header
+        - schema:
+            type: string
+          in: header
+        - schema:
+            type: string
+          in: header
+        - schema:
+            type: string
+          in: header
+        - schema:
+            type: string
+          in: query
+          description: ''
+        - schema:
+            type: string
+          in: query
+        - schema:
+            type: string
+          in: query
+      description: ''
+    post:
+      summary: ''
+      operationId: post-avvisi
+      responses:
+        '200':
+          description: OK
+  '/avvisi/{id}':
+    get:
+      summary: 'Restituisce l''enità avviso con id {id}'
+      tags:
+        - avvisi
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/avviso'
+        '400':
+          description: ID invalido
+        '404':
+          description: tributi non trovato
+        '500':
+          description: Internal Server Error
+  /utils/anno:
+    get:
+      summary: Restituisce la lista di annualità diposnibili
+      tags:
+        - utility
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/anno'
+        '404':
+          description: tributi non trovato
+        '500':
+          description: Internal Server Error
+    post:
+      summary: Crea annualità
+      tags:
+        - utility
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/anno'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/anno'
+  '/utils/anno/{id}':
+    put:
+      summary: Modifica le annualità disponibili
+      tags:
+        - utility
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/anno'
+      responses:
+        '202':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/anno'
+        '400':
+          description: ID invalido
+        '404':
+          description: anno non trovato
+        '500':
+          description: Internal Server Error
+  /utils/tipologia_documenti:
+    get:
+      summary: Restituisce la lista delle tipologie di documenti
+      tags:
+        - utility
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/tipologiaDocumento'
+        '404':
+          description: documento non trovato
+        '500':
+          description: Internal Server Error
+  /utils/tributiAnagraficaDocumento:
+    get:
+      summary: Restituisce la lista degli oggetti che rappresentano i codici tributi
+      tags:
+        - utility
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/anagraficaTributi'
+        '404':
+          description: documento non trovato
+        '500':
+          description: Internal Server Error
+  /utils/gestione_regione_uffici:
+    get:
+      summary: Restituisce la lista delle associazioni regioni uffici
+      tags:
+        - utility
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/regioni_uffici'
+    post:
+      summary: Crea associazione regione ufficio
+      tags:
+        - utility
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/regioni_uffici'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/regioni_uffici'
+        '406':
+          description: Parametri in ingrasso non validi
+        '500':
+          description: Internal Server Error
+  /utils/grafici:
+    get:
+      summary: Restituisce la lista degli oggetti che consentono di popolare i grafici
+      tags:
+        - utility
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/grafico'
+  /email/pec:
+    get:
+      summary: Restituisce la lista delle email disponibili per tipo
+      tags:
+        - email
+      parameters:
+        - name: tipo
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/email'
+  '/email/pec/{id}':
+    put:
+      summary: Modifica l'indirizzo email della PEC
+      tags:
+        - email
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/email'
+      responses:
+        '202':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/email'
+    delete:
+      summary: Elimina l'indirizzo email della PEC
+      tags:
+        - email
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/email'
+  /file:
+    get:
+      summary: Restituisce l'elenco dei file associati a quella risorsa
+      tags:
+        - file
+      parameters:
+        - name: tipo
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/file'
+  '/file/download/{id}':
+    get:
+      summary: 'Restituisce il bytearray del pdf con id {id}'
+      tags:
+        - file
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/download'
+  /regolamento:
+    get:
+      summary: Restituisce l'elenco delle delibere regolamento
+      tags:
+        - regolamento
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/regolamento'
+    post:
+      summary: Crea la risorsa regolamento
+      tags:
+        - regolamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/regolamento'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/regolamento'
+  '/regolamento/{id}':
+    put:
+      summary: 'Modifica la risorsa regolamento {id}'
+      tags:
+        - regolamento
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/regolamento'
+      responses:
+        '202':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/regolamento'
+    delete:
+      summary: 'Elimina la risorsa regolamento {id}'
+      tags:
+        - regolamento
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    avviso:
+      properties:
+        idTipologiaAvviso:
+          type: integer
+          example: 1
+        dataAvviso:
+          type: string
+          example: gg/mm/yyyy
+        titoloAvviso:
+          type: string
+          example: Titolo avviso
+        abstractAvviso:
+          type: string
+          example: Abstract avviso
+        testoLungoAvviso:
+          type: string
+          example: testo avviso completo
+        tipologiaAvviso:
+          $ref: '#/components/schemas/tipoAvviso'
+    tipoAvviso:
+      properties:
+        id:
+          type: integer
+          example: 1
+        descrizioneTipologiaAvviso:
+          type: string
+          example: Descrizione tipologia avviso
+        homePageTipologiaAvviso:
+          type: string
+          example: Esempio homepage tipologia avviso
+    anno:
+      properties:
+        anno:
+          type: integer
+          example: 2014
+        tributiAnagraficaDocumento:
+          type: array
+          items:
+            $ref: '#/components/schemas/anagraficaTributi'
+        flgAttivo:
+          type: integer
+          example: 1
+    tipologiaDocumento:
+      properties:
+        idTipologiaDocumento:
+          type: integer
+          example: 1
+        descrizioneDocumento:
+          type: string
+          example: Delibera
+        checkPubblicazione:
+          type: integer
+          example: 1
+    email:
+      properties:
+        idAnagraficaMail:
+          type: integer
+          example: 1
+        tipoIndirizzo:
+          type: string
+          example: PEC
+        indirizzoMail:
+          type: string
+          example: prova@pec.it
+        tributo:
+          $ref: '#/components/schemas/tipologiaTributo'
+    tipologiaTributo:
+      properties:
+        idTributo:
+          type: integer
+          example: 1
+        codiceTributo:
+          type: string
+          example: RCA
+        descrizioneTributo:
+          type: string
+          example: descrizione tributo RCA
+        flagPubblicazione:
+          type: integer
+          example: 1
+    statoDocumento:
+      properties:
+        idStatoDocumento:
+          type: integer
+          example: 1
+        descrizioneStatoDocumento:
+          type: string
+          example: Descrizione stato
+    tipologiaFirma:
+      properties:
+        idTipologiaFirma:
+          type: integer
+          example: 1
+        tipologiaFirma:
+          type: string
+          example: Tipologia firma
+    file:
+      properties:
+        idDocumento:
+          type: integer
+          example: 1
+        idAnagraficaDocumento:
+          type: integer
+          example: 1
+        idAtmos:
+          type: string
+          example: sdfjtnrj45fdk
+        idAtmosFirmato:
+          type: string
+          example: sdfjtnrj45fdk
+        idCmisFile:
+          type: string
+          example: sdfjtnrj45fdk
+        idProtocollo:
+          type: string
+          example: sdfjtnrj45fdk
+        statoDocumento:
+          $ref: '#/components/schemas/statoDocumento'
+        tipologiaFirma:
+          $ref: '#/components/schemas/tipologiaFirma'
+        documento:
+          $ref: '#/components/schemas/tipologiaDocumento'
+    download:
+      properties:
+        idFile:
+          type: string
+          example: s6456ggdg
+        nomeFile:
+          type: string
+          example: Nome file
+        contenuto:
+          type: string
+          example: vnjkiwlsedjfnvklsewfvnlwbfcwlfdbvdl
+    regolamento:
+      properties:
+        idAnagraficaDocumento:
+          type: integer
+          example: 1
+        regione:
+          type: string
+          example: Lazio
+        provincia:
+          type: string
+          example: Roma
+        anno:
+          type: integer
+          example: 2020
+        numero:
+          type: integer
+          example: 2
+        data:
+          type: string
+          example: gg/mm/yyyy
+        variazioneAliquota:
+          type: integer
+          example: 3
+        aliquotaApplicabile:
+          type: integer
+          example: 10
+        indirizzoPec:
+          type: string
+          example: prova@pec.it
+        note:
+          type: string
+          example: testo note
+        tributiAnagraficaDocumento:
+          type: array
+          items:
+            $ref: '#/components/schemas/anagraficaTributi'
+        workflowDocumento:
+          $ref: '#/components/schemas/workflowDocumento'
+        file:
+          type: array
+          items:
+            $ref: '#/components/schemas/file'
+    anagraficaTributi:
+      properties:
+        idTributo:
+          type: integer
+          example: 1
+        codiceTributo:
+          type: string
+          example: codice
+        descrizioneTributo:
+          type: string
+          example: descrizione
+        flagPubblicazione:
+          type: integer
+          example: 0
+    workflowDocumento:
+      properties:
+        idWorkflowRegolamento:
+          type: integer
+          example: 1
+        descrizioneStatoRegolamento:
+          type: string
+          example: Stato regolamento
+    regioni_uffici:
+      properties:
+        ufficio:
+          $ref: '#/components/schemas/ufficio'
+        regione:
+          $ref: '#/components/schemas/regione'
+    ufficio:
+      properties:
+        idUfficioDF:
+          type: integer
+          example: 1
+        descrizioneUfficio:
+          type: string
+          example: Descrizione ufficio
+        codiceUfficio:
+          type: string
+          example: Codice ufficio
+        indirizzoMail:
+          type: string
+          example: Email ufficio
+    regione:
+      properties:
+        idRegione:
+          type: integer
+          example: 1
+        descrizioneRegione:
+          type: string
+          example: Descrizione regione
+    grafico:
+      properties:
+        grafico1:
+          type: string
+          example: a
+        grafico2:
+          type: string
+          example: b
+        grafico3:
+          type: string
+          example: c
